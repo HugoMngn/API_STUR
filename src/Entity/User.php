@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -26,8 +28,17 @@ class User
     #[ORM\Column(length: 255)]
     private ?string $gender = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $studies = null;
+    /**
+     * @var Collection<int, etude>
+     */
+    #[ORM\ManyToMany(targetEntity: etude::class)]
+    private Collection $etude;
+
+    public function __construct()
+    {
+        $this->etude = new ArrayCollection();
+    }
+
 
     public function getId(): ?int
     {
@@ -82,14 +93,26 @@ class User
         return $this;
     }
 
-    public function getStudies(): ?string
+    /**
+     * @return Collection<int, etude>
+     */
+    public function getEtude(): Collection
     {
-        return $this->studies;
+        return $this->etude;
     }
 
-    public function setStudies(string $studies): static
+    public function addEtude(etude $etude): static
     {
-        $this->studies = $studies;
+        if (!$this->etude->contains($etude)) {
+            $this->etude->add($etude);
+        }
+
+        return $this;
+    }
+
+    public function removeEtude(etude $etude): static
+    {
+        $this->etude->removeElement($etude);
 
         return $this;
     }
