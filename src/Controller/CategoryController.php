@@ -3,8 +3,6 @@
 namespace App\Controller;
 
 use App\Service\CategoryJsonFormatter;
-use App\Entity\Category;
-use App\Repository\CategoryRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,13 +20,23 @@ class CategoryController extends AbstractController
     #[Route("/api/categories/{categoryId}", name:"api_category_getCategory", methods:['GET'])]
     public function getCategory(int $categoryId): JsonResponse
     {
-        $categoryData = $this->categoryJsonFormatter->getCategoryDetails($categoryId);
+        try {
+            $categoryData = $this->categoryJsonFormatter->getCategoryDetails($categoryId);
 
-        if (!$categoryData) {
-            return new JsonResponse(['error' => 'Category not found'], Response::HTTP_NOT_FOUND);
+            if (!$categoryData) {
+                return new JsonResponse(
+                    ['error' => 'Category not found'], 
+                    Response::HTTP_NOT_FOUND
+                );
+            }
+
+            return new JsonResponse($categoryData, Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                ['error' => 'An error occurred: ' . $e->getMessage()], 
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
-
-        return new JsonResponse($categoryData);
     }
 /*
     #[Route('/api/category', name: 'put_category')]

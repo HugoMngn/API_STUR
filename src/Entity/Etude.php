@@ -24,6 +24,12 @@ class Etude
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'filiere')]
     private Collection $cursus;
 
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'etudes')]
+    private Collection $users;
+
     public function __construct()
     {
         $this->cursus = new ArrayCollection();
@@ -83,6 +89,33 @@ class Etude
             if ($cursus->getFiliere() === $this) {
                 $cursus->setFiliere(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): static
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addEtude($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): static
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removeEtude($this);
         }
 
         return $this;

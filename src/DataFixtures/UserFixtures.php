@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Etude;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use App\Entity\User;
@@ -10,13 +11,20 @@ class UserFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
+        $etude1= new Etude;
+        $etude1->setName('droit');
+
+        $etude2= new Etude;
+        $etude2->setName('droit');
+
+
         $user1 = new User();
         $user1
             ->setPseudonyme("John")
             ->setEmailAdress("John@test.fr")
             ->setAge(23)
             ->setGender("Helicoptere")
-            ->setStudies("Droit"); 
+            ->addEtude($etude1); 
 
         $user2 = new User();
         $user2
@@ -24,7 +32,7 @@ class UserFixtures extends Fixture
             ->setEmailAdress("Michel@test.fr")
             ->setAge(23)
             ->setGender("Homme")
-            ->setStudies("Comptabilité"); 
+            ->addEtude($etude2); 
 
 
         $manager->persist($user1);

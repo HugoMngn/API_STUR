@@ -31,12 +31,12 @@ class User
     /**
      * @var Collection<int, etude>
      */
-    #[ORM\ManyToMany(targetEntity: etude::class)]
-    private Collection $etude;
+    #[ORM\ManyToMany(targetEntity: etude::class, cascade:["persist"], inversedBy: 'users')]
+    private Collection $etudes;
 
     public function __construct()
     {
-        $this->etude = new ArrayCollection();
+        $this->etudes = new ArrayCollection();
     }
 
 
@@ -96,15 +96,15 @@ class User
     /**
      * @return Collection<int, etude>
      */
-    public function getEtude(): Collection
+    public function getEtudes(): Collection
     {
-        return $this->etude;
+        return $this->etudes;
     }
 
     public function addEtude(etude $etude): static
     {
-        if (!$this->etude->contains($etude)) {
-            $this->etude->add($etude);
+        if (!$this->etudes->contains($etude)) {
+            $this->etudes->add($etude);
         }
 
         return $this;
@@ -112,7 +112,7 @@ class User
 
     public function removeEtude(etude $etude): static
     {
-        $this->etude->removeElement($etude);
+        $this->etudes->removeElement($etude);
 
         return $this;
     }
