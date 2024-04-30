@@ -29,9 +29,9 @@ class User
     private ?string $gender = null;
 
     /**
-     * @var Collection<int, etude>
+     * @var Collection<int, Etude>
      */
-    #[ORM\ManyToMany(targetEntity: etude::class, cascade:["persist"], inversedBy: 'users')]
+    #[ORM\ManyToMany(targetEntity: Etude::class, cascade:["persist"], inversedBy: 'users')]
     private Collection $etudes;
 
     public function __construct()

@@ -19,7 +19,7 @@ class Etude
     private ?string $name = null;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'cursus')]
-    private ?etude $filiere=null;
+    private ?Etude $filiere=null;
 
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'filiere')]
     private Collection $cursus;

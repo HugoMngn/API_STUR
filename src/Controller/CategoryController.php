@@ -45,27 +45,22 @@ class CategoryController extends AbstractController
     {
         $requestData = json_decode($request->getContent(), true);
         $newCategoryData = $this->categoryJsonFormatter->createCategory($requestData);
-        return new JsonResponse($newCategoryData, Response::HTTP_CREATED);
-
-        // return new JsonResponse(['message' => 'Create category endpoint reached'], Response::HTTP_OK);
+        return new JsonResponse(['message' => 'Category created successfully', 'data' => $newCategoryData], Response::HTTP_CREATED);
     }
-
+    
     #[Route('/api/categories/{categoryId}', name: 'api_category_updateCategory', methods:['PUT'])]
     public function updateCategory(int $categoryId, Request $request): JsonResponse
     {
         $requestData = json_decode($request->getContent(), true);
         $updatedCategoryData = $this->categoryJsonFormatter->updateCategory($categoryId, $requestData);
-        return new JsonResponse($updatedCategoryData, Response::HTTP_OK);
-
-        // return new JsonResponse(['message' => 'Update category endpoint reached'], Response::HTTP_OK);
+        return new JsonResponse(['message' => 'Category updated successfully', 'data' => $updatedCategoryData], Response::HTTP_OK);
     }
-
+    
     #[Route('/api/categories/{categoryId}', name: 'api_category_deleteCategory', methods:['DELETE'])]
     public function deleteCategory(int $categoryId): JsonResponse
     {
         $this->categoryJsonFormatter->deleteCategory($categoryId);
         return new JsonResponse(['message' => 'Category deleted successfully'], Response::HTTP_OK);
-
-        // return new JsonResponse(['message' => 'Delete category endpoint reached'], Response::HTTP_OK);
     }
+    
 }
