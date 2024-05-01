@@ -25,6 +25,7 @@ class DiaryJsonFormatter
         return [
             'id' => $diary->getId(),
             'user_pseudonym' => $diary->getUserPseudonym(),
+            'user_id'=>$diary->getUser(),
             'open' => $diary->isOpen(),
             'created_at' => $diary->getCreatedAt()->format('Y-m-d H:i:s'),
             'duration' => $diary->getDuration(),
