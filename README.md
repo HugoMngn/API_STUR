@@ -9,7 +9,7 @@ https://www.wampserver.com
 https://code.visualstudio.com/download
 
 Lancer WAMP et se connecter sur MariaDB via PHPMyAdmin (identifiant: root & pas de mdp) 
-Ouvrir le dossier dans VS code (via git clone https://github.com/HugoMngn/Chaos_auto.git ou telecharger le fichier .zip)
+Ouvrir le dossier dans VS code (via git clone https://github.com/HugoMngn/API_STUR.git ou telecharger le fichier .zip)
 Installer composer, symfony et doctrine sur votre pc via la documentation officiel.
 Taper les commandes suivantes dans un terminal pour mettre en place la base de donnée:
   php bin/console d:d:c 
@@ -20,5 +20,5 @@ Taper les commandes suivantes dans un terminal pour mettre en place la base de d
 Lancer le serveur avec cette commande:
   symfony server:start
 
-Sur postman, faire les différentes requetes sur l'url suivante : http://127.0.0.1:8000/api/{route voulu}
+Sur postman, faire les différentes requetes sur l'url suivante : http://127.0.0.1:8000/api/{route_voulu}
 Par exemple: http://127.0.0.1:8000/api/categories/23
