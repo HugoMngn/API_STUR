@@ -3,117 +3,106 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: '`user`')]
-class User
+#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $pseudonyme = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $email_adress = null;
-
-    #[ORM\Column]
-    private ?int $age = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $gender = null;
+    #[ORM\Column(length: 180)]
+    private ?string $email = null;
 
     /**
-     * @var Collection<int, Etude>
+     * @var list<string> The user roles
      */
-    #[ORM\ManyToMany(targetEntity: Etude::class, cascade:["persist"], inversedBy: 'users')]
-    private Collection $etudes;
+    #[ORM\Column]
+    private array $roles = [];
 
-    public function __construct()
-    {
-        $this->etudes = new ArrayCollection();
-    }
-
+    /**
+     * @var string The hashed password
+     */
+    #[ORM\Column]
+    private ?string $password = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getPseudonyme(): ?string
+    public function getEmail(): ?string
     {
-        return $this->pseudonyme;
+        return $this->email;
     }
 
-    public function setPseudonyme(string $pseudonyme): static
+    public function setEmail(string $email): static
     {
-        $this->pseudonyme = $pseudonyme;
-
-        return $this;
-    }
-
-    public function getEmailAdress(): ?string
-    {
-        return $this->email_adress;
-    }
-
-    public function setEmailAdress(string $email_adress): static
-    {
-        $this->email_adress = $email_adress;
-
-        return $this;
-    }
-
-    public function getAge(): ?int
-    {
-        return $this->age;
-    }
-
-    public function setAge(int $age): static
-    {
-        $this->age = $age;
-
-        return $this;
-    }
-
-    public function getGender(): ?string
-    {
-        return $this->gender;
-    }
-
-    public function setGender(string $gender): static
-    {
-        $this->gender = $gender;
+        $this->email = $email;
 
         return $this;
     }
 
     /**
-     * @return Collection<int, etude>
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
      */
-    public function getEtudes(): Collection
+    public function getUserIdentifier(): string
     {
-        return $this->etudes;
+        return (string) $this->email;
     }
 
-    public function addEtude(etude $etude): static
+    /**
+     * @see UserInterface
+     *
+     * @return list<string>
+     */
+    public function getRoles(): array
     {
-        if (!$this->etudes->contains($etude)) {
-            $this->etudes->add($etude);
-        }
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    /**
+     * @param list<string> $roles
+     */
+    public function setRoles(array $roles): static
+    {
+        $this->roles = $roles;
 
         return $this;
     }
 
-    public function removeEtude(etude $etude): static
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): string
     {
-        $this->etudes->removeElement($etude);
+        return $this->password;
+    }
+
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
 
         return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials(): void
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
     }
 }

@@ -4,9 +4,9 @@ namespace App\Service;
 
 use App\Entity\Etude;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Entity\User;
+use App\Entity\Usertest;
 
-class UserJsonFormatter
+class UsertestJsonFormatter
 {
     private $entityManager;
 
@@ -17,7 +17,7 @@ class UserJsonFormatter
 
     public function getUserDetails(int $userId): ?array
     {
-        $user = $this->entityManager->getRepository(User::class)->find($userId);
+        $user = $this->entityManager->getRepository(Usertest::class)->find($userId);
     
         if (!$user) {
             return null;
@@ -42,7 +42,7 @@ class UserJsonFormatter
 
     public function createUser(array $data): ?array
     {
-        $user = new User();
+        $user = new Usertest();
         $user->setPseudonyme($data['pseudonyme']);
         $user->setEmailAdress($data['email_address']);
         $user->setAge($data['age']);
@@ -69,7 +69,7 @@ class UserJsonFormatter
 
     public function updateUser(int $userId, array $data): ?array
     {
-        $user = $this->entityManager->getRepository(User::class)->find($userId);
+        $user = $this->entityManager->getRepository(Usertest::class)->find($userId);
 
         if (!$user) {
             return null;
@@ -87,7 +87,7 @@ class UserJsonFormatter
 
     public function deleteUser(int $userId): bool
     {
-        $user = $this->entityManager->getRepository(User::class)->find($userId);
+        $user = $this->entityManager->getRepository(Usertest::class)->find($userId);
 
         if (!$user) {
             return false;

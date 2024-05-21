@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Manager\CategoryManager;
 use App\Service\CategoryJsonFormatter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -11,14 +12,16 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class CategoryController extends AbstractController
 {
-    private $categoryJsonFormatter; 
+    private $categoryJsonFormatter;
+    private $categoryManager;
 
-    public function __construct(CategoryJsonFormatter $categoryJsonFormatter) 
+    public function __construct(CategoryJsonFormatter $categoryJsonFormatter, CategoryManager $categoryManager) 
     {
         $this->categoryJsonFormatter = $categoryJsonFormatter;
+        $this->categoryManager = $categoryManager;
     }
 
-    #[Route("/api/categories/{categoryId}", name:"api_category_getCategory", methods:['GET'])]
+    #[Route("/api/category/{categoryId}", name:"api_category_getCategory", methods:['GET'])]
     public function getCategory(int $categoryId): JsonResponse
     {
         try {
@@ -40,27 +43,76 @@ class CategoryController extends AbstractController
         }
     }
 
-    #[Route('/api/categories', name: 'api_category_createCategory', methods:['POST'])]
+    #[Route('/api/category', name: 'api_category_createCategory', methods:['POST'])]
     public function createCategory(Request $request): JsonResponse
     {
-        $requestData = json_decode($request->getContent(), true);
-        $newCategoryData = $this->categoryJsonFormatter->createCategory($requestData);
-        return new JsonResponse(['message' => 'Category created successfully', 'data' => $newCategoryData], Response::HTTP_CREATED);
+        try {
+            $requestData = json_decode($request->getContent(), true);
+
+            $newCategory = $this->categoryManager->createCategory($requestData);
+
+            return new JsonResponse(
+                [
+                    'message' => 'Category created successfully', 
+                    'data' => $this->categoryJsonFormatter->getCategoryDetails($newCategory->getId())
+                ],
+                Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                ['error' => 'An error occurred: ' . $e->getMessage()], 
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
     
-    #[Route('/api/categories/{categoryId}', name: 'api_category_updateCategory', methods:['PUT'])]
+    #[Route('/api/category/{categoryId}', name: 'api_category_updateCategory', methods:['PUT'])]
     public function updateCategory(int $categoryId, Request $request): JsonResponse
     {
-        $requestData = json_decode($request->getContent(), true);
-        $updatedCategoryData = $this->categoryJsonFormatter->updateCategory($categoryId, $requestData);
-        return new JsonResponse(['message' => 'Category updated successfully', 'data' => $updatedCategoryData], Response::HTTP_OK);
+        try {
+            $requestData = json_decode($request->getContent(), true);
+
+            $updatedCategory = $this->categoryManager->updateCategory($categoryId, $requestData);
+
+            if (null === $updatedCategory) {
+                return new JsonResponse(
+                    ['error' => 'Category not found'], 
+                    Response::HTTP_NOT_FOUND
+                );
+            }
+
+            return new JsonResponse(
+                [
+                    'message' => 'Category updated successfully', 
+                    'data' => $this->categoryJsonFormatter->getCategoryDetails($categoryId)
+                ], 
+                Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                ['error' => 'An error occurred: ' . $e->getMessage()], 
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
     
-    #[Route('/api/categories/{categoryId}', name: 'api_category_deleteCategory', methods:['DELETE'])]
+    #[Route('/api/category/{categoryId}', name: 'api_category_deleteCategory', methods:['DELETE'])]
     public function deleteCategory(int $categoryId): JsonResponse
     {
-        $this->categoryJsonFormatter->deleteCategory($categoryId);
-        return new JsonResponse(['message' => 'Category deleted successfully'], Response::HTTP_OK);
+        try {
+            $category = $this->categoryManager->deleteCategory($categoryId);
+
+            if (!$category) {
+                return new JsonResponse(
+                    ['error' => 'Category not found'], 
+                    Response::HTTP_NOT_FOUND
+                );
+            }
+
+            return new JsonResponse(['message' => 'Category [' . $category->getName() . '] has been successfully deleted'], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return new JsonResponse(
+                ['error' => 'An error occurred: ' . $e->getMessage()], 
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
-    
 }
