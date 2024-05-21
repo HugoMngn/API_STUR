@@ -15,11 +15,11 @@ class Activity
 
     #[ORM\OneToOne(inversedBy: 'activity', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private ?diary $diary = null;
+    private ?Diary $diary = null;
 
     #[ORM\OneToOne(inversedBy: 'activity', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private ?category $category = null;
+    private ?Category $category = null;
 
     #[ORM\Column(length: 255)]
     private ?string $metadata = null;
@@ -29,24 +29,24 @@ class Activity
         return $this->id;
     }
 
-    public function getDiaryId(): ?diary
+    public function getDiaryId(): ?Diary
     {
         return $this->diary;
     }
 
-    public function setDiaryId(diary $diary): static
+    public function setDiaryId(Diary $diary): static
     {
         $this->diary = $diary;
 
         return $this;
     }
 
-    public function getCategoryId(): ?category
+    public function getCategoryId(): ?Category
     {
         return $this->category;
     }
 
-    public function setCategoryId(category $category): static
+    public function setCategoryId(Category $category): static
     {
         $this->category = $category;
 

@@ -21,7 +21,7 @@ class Category
     private string $name;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'children')]
-    private ?category $parent=null;
+    private ?Category $parent=null;
 
     #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     private Collection $children;

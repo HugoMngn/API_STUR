@@ -19,17 +19,16 @@ class ActivityJsonFormatter
     public function getActivityDetails(int $activityId): ?array
     {
         $activity = $this->entityManager->getRepository(Activity::class)->find($activityId);
-
+    
         if (!$activity) {
             return null;
         }
-
+    
         return [
             'id' => $activity->getId(),
             'diary_id' => $activity->getDiaryId()->getId(),
             'category_id' => $activity->getCategoryId()->getId(),
             'metadata' => $activity->getMetadata(),
-            // Add other activity details as needed
         ];
     }
 
@@ -58,7 +57,6 @@ class ActivityJsonFormatter
         $activity->setDiaryId($this->entityManager->getReference(Diary::class, $data['diary_id']));
         $activity->setCategoryId($this->entityManager->getReference(Category::class, $data['category_id']));
         $activity->setMetadata($data['metadata']);
-        // Update other activity properties as needed
 
         $this->entityManager->flush();
 
@@ -81,6 +79,21 @@ class ActivityJsonFormatter
 
     public function getAllActivities(array $filters): ?array
     {
-        // Implement logic to retrieve all activities with optional filters
+        $activityRepository = $this->entityManager->getRepository(Activity::class);
+    
+        $criteria = [];
+    
+        if (isset($filters['category_id'])) {
+            $criteria['category'] = $filters['category_id'];
+        }
+    
+        if (isset($filters['metadata'])) {
+            $criteria['metadata'] = $filters['metadata'];
+        }
+    
+        $activities = $activityRepository->findBy($criteria);
+    
+        return $activities ?: null;
     }
+    
 }
