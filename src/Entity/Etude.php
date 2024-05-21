@@ -25,9 +25,9 @@ class Etude
     private Collection $cursus;
 
     /**
-     * @var Collection<int, User>
+     * @var Collection<int, Usertest>
      */
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'etudes')]
+    #[ORM\ManyToMany(targetEntity: Usertest::class, mappedBy: 'etudes')]
     private Collection $users;
 
     public function __construct()
@@ -95,27 +95,27 @@ class Etude
     }
 
     /**
-     * @return Collection<int, User>
+     * @return Collection<int, Usertest>
      */
     public function getUsers(): Collection
     {
         return $this->users;
     }
 
-    public function addUser(User $user): static
+    public function addUser(Usertest $usertest): static
     {
-        if (!$this->users->contains($user)) {
-            $this->users->add($user);
-            $user->addEtude($this);
+        if (!$this->users->contains($usertest)) {
+            $this->users->add($usertest);
+            $usertest->addEtude($this);
         }
 
         return $this;
     }
 
-    public function removeUser(User $user): static
+    public function removeUser(Usertest $usertest): static
     {
-        if ($this->users->removeElement($user)) {
-            $user->removeEtude($this);
+        if ($this->users->removeElement($usertest)) {
+            $usertest->removeEtude($this);
         }
 
         return $this;
