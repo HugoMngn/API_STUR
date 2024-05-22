@@ -4,9 +4,9 @@ namespace App\Service;
 
 use App\Entity\Etude;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Entity\Usertest;
+use App\Entity\User;
 
-class UsertestJsonFormatter
+class UserJsonFormatter
 {
     private $entityManager;
 
@@ -17,13 +17,13 @@ class UsertestJsonFormatter
 
     public function getUserDetails(int $userId): ?array
     {
-        $user = $this->entityManager->getRepository(Usertest::class)->find($userId);
+        $user = $this->entityManager->getRepository(User::class)->find($userId);
     
         if (!$user) {
             return null;
         }
         $etudesDetails = [];
-        foreach ($user->getEtudes() as $etude) {
+        foreach ($user->getEtude() as $etude) {
             $etudesDetails[] = [
                 'id' => $etude->getId(),
                 'name' => $etude->getName(),
@@ -34,7 +34,7 @@ class UsertestJsonFormatter
             'id' => $user->getId(),
             'pseudonyme' => $user->getPseudonyme(),
             'age' => $user->getAge(),
-            'email' => $user->getEmailAdress(),
+            'email' => $user->getEmail(),
             'etudes' => $etudesDetails,
         ];
     }
@@ -42,9 +42,9 @@ class UsertestJsonFormatter
 
     public function createUser(array $data): ?array
     {
-        $user = new Usertest();
+        $user = new User();
         $user->setPseudonyme($data['pseudonyme']);
-        $user->setEmailAdress($data['email_address']);
+        $user->setEmail($data['email_address']);
         $user->setAge($data['age']);
         $user->setGender($data['gender']);
     
@@ -69,7 +69,7 @@ class UsertestJsonFormatter
 
     public function updateUser(int $userId, array $data): ?array
     {
-        $user = $this->entityManager->getRepository(Usertest::class)->find($userId);
+        $user = $this->entityManager->getRepository(User::class)->find($userId);
 
         if (!$user) {
             return null;
@@ -77,7 +77,7 @@ class UsertestJsonFormatter
 
         $user->setPseudonyme($data['pseudonyme']);
         $user->setAge($data['Age']);
-        $user->setEmailAdress($data['email']);
+        $user->setEmail($data['email']);
         $user->setGender($data['gender']);
 
         $this->entityManager->flush();
@@ -87,7 +87,7 @@ class UsertestJsonFormatter
 
     public function deleteUser(int $userId): bool
     {
-        $user = $this->entityManager->getRepository(Usertest::class)->find($userId);
+        $user = $this->entityManager->getRepository(User::class)->find($userId);
 
         if (!$user) {
             return false;

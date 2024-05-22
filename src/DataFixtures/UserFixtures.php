@@ -3,37 +3,39 @@
 namespace App\DataFixtures;
 
 use App\Entity\Etude;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use App\Entity\Usertest;
 
-class UsertestFixtures extends Fixture
+class UserFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        $etude1= new Etude;
+        $etude1 = new Etude();
         $etude1->setName('droit');
 
-        $etude2= new Etude;
+        $etude2 = new Etude();
         $etude2->setName('droit');
 
-
-        $user1 = new Usertest();
+        $user1 = new User();
         $user1
+            ->setEmail("John@test.fr")
             ->setPseudonyme("John")
-            ->setEmailAdress("John@test.fr")
             ->setAge(23)
             ->setGender("Helicoptere")
-            ->addEtude($etude1); 
+            ->setPassword('password') // Change 'password' to the desired password
+            ->setRoles(['ROLE_USER'])
+            ->addEtude($etude1);
 
-        $user2 = new Usertest();
+        $user2 = new User();
         $user2
+            ->setEmail("Michel@test.fr")
             ->setPseudonyme("Michhel")
-            ->setEmailAdress("Michel@test.fr")
             ->setAge(23)
             ->setGender("Homme")
-            ->addEtude($etude2); 
-
+            ->setPassword('password') // Change 'password' to the desired password
+            ->setRoles(['ROLE_USER'])
+            ->addEtude($etude2);
 
         $manager->persist($user1);
         $manager->persist($user2);

@@ -7,14 +7,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Service\UsertestJsonFormatter;
-class UsertestController extends AbstractController
+use App\Service\UserJsonFormatter;
+class UserController extends AbstractController
 {
-    private $usertestJsonFormatter;
+    private $UserJsonFormatter;
 
-    public function __construct(UsertestJsonFormatter $usertestJsonFormatter)
+    public function __construct(UserJsonFormatter $UserJsonFormatter)
     {
-        $this->usertestJsonFormatter = $usertestJsonFormatter;
+        $this->UserJsonFormatter = $UserJsonFormatter;
     }
 
     #[Route('/api/user/{Userid}', name: 'app_user', methods:['GET'])]
@@ -22,7 +22,7 @@ class UsertestController extends AbstractController
     {
         $userId = $request->query->get('Userid');
 
-        $userDetails = $this->usertestJsonFormatter->getUserDetails($userId);
+        $userDetails = $this->UserJsonFormatter->getUserDetails($userId);
 
         if (!$userDetails) {
             return new JsonResponse(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
@@ -36,7 +36,7 @@ class UsertestController extends AbstractController
     {
         $userData = json_decode($request->getContent(), true);
 
-        $newUserData = $this->usertestJsonFormatter->createUser($userData);
+        $newUserData = $this->UserJsonFormatter->createUser($userData);
 
         return new JsonResponse($newUserData, Response::HTTP_CREATED);
     }
@@ -46,7 +46,7 @@ class UsertestController extends AbstractController
     {
         $userData = json_decode($request->getContent(), true);
 
-        $updatedUserData = $this->usertestJsonFormatter->updateUser($userData['id'], $userData);
+        $updatedUserData = $this->UserJsonFormatter->updateUser($userData['id'], $userData);
 
         if (!$updatedUserData) {
             return new JsonResponse(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
@@ -60,7 +60,7 @@ class UsertestController extends AbstractController
     {
         $userId = $request->request->get('id');
 
-        $isDeleted = $this->usertestJsonFormatter->deleteUser($userId);
+        $isDeleted = $this->UserJsonFormatter->deleteUser($userId);
 
         if (!$isDeleted) {
             return new JsonResponse(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
