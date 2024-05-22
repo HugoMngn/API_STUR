@@ -38,13 +38,17 @@ class UserJsonFormatter
             'etudes' => $etudesDetails,
         ];
     }
-    
 
     public function createUser(array $data): ?array
     {
+        // Vérifiez que les données requises sont présentes
+        if (!isset($data['pseudonyme'], $data['email'], $data['age'], $data['gender'])) {
+            return ['error' => 'Toutes les données requises ne sont pas fournies'];
+        }
+    
         $user = new User();
         $user->setPseudonyme($data['pseudonyme']);
-        $user->setEmail($data['email_address']);
+        $user->setEmail($data['email']);
         $user->setAge($data['age']);
         $user->setGender($data['gender']);
     
@@ -52,11 +56,10 @@ class UserJsonFormatter
             $etudeIds = $data['etudes'];
             foreach ($etudeIds as $etudeId) {
                 $etude = $this->entityManager->getRepository(Etude::class)->find($etudeId);
-                if ($etude) {
-                    $user->addEtude($etude);
-                } else {
+                if (!$etude) {
                     return ['error' => 'ID invalide pour une étude'];
                 }
+                $user->addEtude($etude);
             }
         }
     
@@ -66,36 +69,42 @@ class UserJsonFormatter
         return $this->getUserDetails($user->getId());
     }
     
-
     public function updateUser(int $userId, array $data): ?array
     {
         $user = $this->entityManager->getRepository(User::class)->find($userId);
-
+    
         if (!$user) {
             return null;
         }
-
+    
+        // Vérifiez que les données requises sont présentes
+        if (!isset($data['pseudonyme'], $data['email'], $data['age'], $data['gender'])) {
+            return ['error' => 'Toutes les données requises ne sont pas fournies'];
+        }
+    
         $user->setPseudonyme($data['pseudonyme']);
-        $user->setAge($data['Age']);
+        $user->setAge($data['age']);
         $user->setEmail($data['email']);
         $user->setGender($data['gender']);
-
+    
         $this->entityManager->flush();
-
+    
         return $this->getUserDetails($user->getId());
     }
-
+    
     public function deleteUser(int $userId): bool
     {
         $user = $this->entityManager->getRepository(User::class)->find($userId);
-
+    
         if (!$user) {
             return false;
         }
-
+    
         $this->entityManager->remove($user);
         $this->entityManager->flush();
-
+    
         return true;
     }
+    
+
 }

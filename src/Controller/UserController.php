@@ -18,18 +18,19 @@ class UserController extends AbstractController
     }
 
     #[Route('/api/user/{Userid}', name: 'app_user', methods:['GET'])]
-    public function getInfoUser(Request $request): JsonResponse
+    public function getInfoUser(Request $request, int $Userid): JsonResponse
     {
-        $userId = $request->query->get('Userid');
-
-        $userDetails = $this->UserJsonFormatter->getUserDetails($userId);
-
+        // Proceed only if $Userid is not null
+        $userDetails = $this->UserJsonFormatter->getUserDetails($Userid);
+    
         if (!$userDetails) {
             return new JsonResponse(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
         }
-
+    
         return new JsonResponse($userDetails, Response::HTTP_OK);
     }
+    
+    
 
     #[Route('/api/user', name: 'post_user', methods:['POST'])]
     public function createUser(Request $request): JsonResponse
