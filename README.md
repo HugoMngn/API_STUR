@@ -8,9 +8,10 @@ Pour mettre en place la partie API du projet STUR, installer les applications ci
  https://www.wampserver.com
  https://code.visualstudio.com/download
         
-Lancer WAMP et se connecter sur MariaDB via PHPMyAdmin (identifiant: root & pas de mdp)             
+Lancer WAMP et se connecter sur MariaDB via PHPMyAdmin (identifiant: root & pas de mdp)  
 Ouvrir le dossier dans VS code (via git clone https://github.com/HugoMngn/API_STUR.git ou telecharger le fichier .zip)        
 Installer composer, symfony et doctrine sur votre pc via la documentation officiel.      
+Modifier le fichier .env pour correspondre à votre à votre version de MariaDB.
 Taper les commandes suivantes dans un terminal pour mettre en place la base de donnée:     
   php bin/console d:d:c       
   php bin/console d:m:m     
